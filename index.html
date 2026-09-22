@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Лик в чёрном обсидиане: интерактивное раскрытие</title>
+<style>
+:root {
+  --accent: #7a7a8a;
+  --gold: #c0c0d8;
+  --bg: #08080c;
+  --card-bg: rgba(30, 30, 40, 0.85);
+  --myth-bg: rgba(50, 50, 65, 0.25);
+  --myth-border: rgba(122, 122, 138, 0.3);
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg);
+  color: #e0e0e8;
+  font-family: 'Georgia', serif;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+h1 {
+  text-align: center;
+  color: #fff;
+  font-size: 1.8rem;
+  margin: 0 0 10px;
+  text-shadow: 0 0 12px rgba(192, 192, 216, 0.35);
+  letter-spacing: 1px;
+}
+.subtitle {
+  text-align: center;
+  color: #8888a0;
+  font-size: 0.85rem;
+  margin: 0 0 15px;
+}
+.main-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr 1fr;
+  gap: 18px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 15px 20px;
+  align-items: stretch;
+}
+.left-column,
+.right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.stage-image-container {
+  border-radius: 10px;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.7);
+  overflow: hidden;
+  background-color: #12121a;
+  display: grid;
+  align-self: center;
+  width: 100%;
+}
+.stage-image {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  grid-area: 1 / 1;
+  opacity: 0;
+  transition: opacity 0.6s ease-in-out;
+}
+.stage-image.active { opacity: 1; }
+.stage-card {
+  background: var(--card-bg);
+  padding: 16px;
+  border-radius: 10px;
+  border-left: 4px solid transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+}
+.stage-card:hover {
+  background: rgba(30, 30, 40, 0.95);
+  border-left-color: var(--accent);
+}
+.stage-card.active-card {
+  border-left-color: var(--gold);
+  box-shadow: 0 0 12px rgba(192, 192, 216, 0.2);
+  background: rgba(122, 122, 138, 0.12);
+}
+.stage-title {
+  color: var(--gold);
+  font-weight: bold;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.85rem;
+}
+.stage-card p {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+.myth-section {
+  background: var(--myth-bg);
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid var(--myth-border);
+  text-align: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  cursor: pointer;
+}
+.myth-title {
+  color: var(--gold);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.85rem;
+}
+.myth-text {
+  font-style: italic;
+  color: #c8c8d8;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  margin: 0;
+}
+#stop-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #c0392b;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  z-index: 999;
+  display: none;
+  transition: transform 0.2s;
+}
+#stop-btn:hover { transform: scale(1.05); }
+@media (max-width: 900px) {
+  .main-layout {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "image  image"
+      "left   right";
+    gap: 12px;
+    padding: 10px 12px;
+  }
+  .stage-image-container { grid-area: image; }
+  .left-column { grid-area: left; }
+  .right-column { grid-area: right; }
+  h1 { font-size: 1.4rem; }
+  .stage-card p, .myth-text { font-size: 0.75rem; }
+}
+@media (max-width: 600px) {
+  body { font-size: 0.85rem; }
+  .main-layout {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "image"
+      "left"
+      "right";
+    gap: 8px;
+    padding: 8px 10px;
+  }
+  h1 { font-size: 1.2rem; margin-bottom: 4px; }
+  .subtitle { font-size: 0.72rem; margin-bottom: 8px; }
+  .left-column,
+  .right-column {
+    flex-direction: row;
+    gap: 6px;
+  }
+  .stage-card,
+  .myth-section {
+    flex: 1;
+    padding: 8px;
+  }
+  .stage-title { font-size: 0.7rem; }
+  .stage-card p, .myth-text { font-size: 0.65rem; line-height: 1.35; }
+  .myth-title { font-size: 0.7rem; }
+}
+</style>
+</head>
+<body>
+<h1>Лик, проявленный в чёрном обсидиане</h1>
+<p class="subtitle">Кликните на описание стадии или миф — текст прочитается голосом.</p>
+<button id="stop-btn">Остановить чтение</button>
+<div class="main-layout">
+  <div class="left-column">
+    <div class="stage-card" data-stage="1">
+      <div class="stage-title">Стадия 1: Глубокий сон тьмы</div>
+      <p>Чёрный обсидиан лежит каменным обломком — гладкий, непроницаемый, холодный. Стеклянная поверхность хранит лишь отблески света, но в глубине черноты ещё ничего не различить. Камень спит, и образ скрыт в его тёмной сердцевине.</p>
+    </div>
+    <div class="stage-card" data-stage="2">
+      <div class="stage-title">Стадия 2: Трещина пробуждения</div>
+      <p>Острые сколы обнажают внутреннюю структуру — неровные грани ловят свет под новым углом. В раковистых изломах мерцает намёк на движение, словно тьма начинает дышать. В изгибах сколов проступают неясные очертания — тень ещё без лица, но уже с формой.</p>
+    </div>
+  </div>
+  <div class="stage-image-container">
+    <img src="stage1.jpg" alt="Стадия 1" class="stage-image" data-stage="1" />
+    <img src="stage2.jpg" alt="Стадия 2" class="stage-image" data-stage="2" />
+    <img src="stage3.jpg" alt="Стадия 3 (Финал)" class="stage-image active" data-stage="3" />
+  </div>
+  <div class="right-column">
+    <div class="stage-card active-card" data-stage="3">
+      <div class="stage-title">Стадия 3: Явленный лик</div>
+      <p>Из чёрной глубины камня смотрит женское лицо — высеченное резцом мастера, но словно проступившее само. Полированные плоскости светятся мягким стеклянным блеском, а грубые сколы обрамляют образ, как тёмные крылья. Обсидиан больше не молчит — он хранит взгляд, обращённый к нам из вулканической бездны.</p>
+    </div>
+    <div class="myth-section">
+      <div class="myth-title">Миф: Дочь вулкана</div>
+      <p class="myth-text">
+        В огненном чреве горы жила Ихуэль — дух вулканического стекла, рождённый из лавы и молнии. Когда вулкан уснул, она вышла на поверхность, но солнечный свет обратил её в камень. Тело стало обсидианом — чёрным и острым, как память об огне. Мастера древности чувствовали её присутствие в каждом осколке и высекали лики, чтобы дать ей голос. Говорят, если долго смотреть в полированный обсидиан, можно увидеть глаза Ихуэль — бездонные и тёмные, как остывшая лава.
+      </p>
+    </div>
+  </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const cards = document.querySelectorAll('.stage-card');
+  const images = document.querySelectorAll('.stage-image');
+  const stopBtn = document.getElementById('stop-btn');
+  let synth = window.speechSynthesis;
+
+  function speakText(text) {
+    if (synth.speaking) {
+      synth.cancel();
+    }
+    let utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'ru-RU';
+    utterance.rate = 0.95;
+    utterance.pitch = 1.0;
+    synth.speak(utterance);
+    stopBtn.style.display = 'block';
+    stopBtn.onclick = () => {
+      synth.cancel();
+      stopBtn.style.display = 'none';
+    };
+    utterance.onend = () => {
+      stopBtn.style.display = 'none';
+    };
+  }
+
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      const targetStage = card.dataset.stage;
+      cards.forEach(c => c.classList.remove('active-card'));
+      card.classList.add('active-card');
+      images.forEach(img => {
+        if (img.dataset.stage === targetStage) {
+          img.classList.add('active');
+        } else {
+          img.classList.remove('active');
+        }
+      });
+      const title = card.querySelector('.stage-title').innerText;
+      const text = card.querySelector('p').innerText;
+      speakText(title + '. ' + text);
+    });
+  });
+
+  const mythSection = document.querySelector('.myth-section');
+  mythSection.addEventListener('click', () => {
+    const title = mythSection.querySelector('.myth-title').innerText;
+    const text = mythSection.querySelector('.myth-text').innerText;
+    speakText(title + '. ' + text);
+  });
+});
+</script>
+</body>
+</html>
